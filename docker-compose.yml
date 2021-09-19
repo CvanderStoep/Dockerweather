@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+#Define influxDB service (version 1.8)
+  influxDB:
+    image: influxdb-carlo
+    container_name: influxDB
+    restart: always
+    ports:
+      - 8086:8086
+#    volumes:
+#      - influxdb:/var/lib/influxdb
+
+#Define grafana service
+  grafana:
+    container_name: grafana-carlo
+    image: grafana-carlo
+    restart: always
+    ports:
+    - 3000:3000
+#    volumes:
+#    - grafana:/var/lib/grafana
+
+# #Define dockerweather
+  weather:
+      container_name: "weather"
+      build: .
+      depends_on:
+        - "grafana"
+        - "influxDB"
+      stdin_open: true
+      tty: true
+
+
+#volumes:
+#   influxdb:
+#     external: true
+
