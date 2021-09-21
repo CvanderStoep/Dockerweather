@@ -11,18 +11,15 @@
 import time
 from influxdb import InfluxDBClient
 from datetime import datetime, timedelta
-from get_outside_weather import outside_weather
+from outside_weather import outside_weather
 from private_info import cities
-from private_info import database_name
-from private_info import docker_address
-from private_info import computer_port
-from private_info import computer_address
+from private_info import database_name, docker_address, computer_port
 
 time.sleep(5)
 client = InfluxDBClient(host=docker_address, port=computer_port)  # connect to Influx 1.8 DB
 
 retention_policy_default = None  # the temperature readings are stored indefinitely
-retention_policy_one_week = "one-week"  # the light readings are stored one week
+# retention_policy_one_week = "one-week"  # the light readings are stored one week
 
 if __name__ == '__main__':
 

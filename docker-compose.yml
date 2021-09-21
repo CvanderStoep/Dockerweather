@@ -1,8 +1,8 @@
 version: '3'
 
 services:
-#Define influxDB service (version 1.8)
   influxDB:
+# below image contains data copied from an existing InfluxDB database (localdata)
     image: influxdb-carlo
     container_name: influxDB
     restart: always
@@ -11,17 +11,16 @@ services:
 #    volumes:
 #      - influxdb:/var/lib/influxdb
 
-#Define grafana service
   grafana:
-    container_name: grafana-carlo
-    image: grafana-carlo
+# below image contains a dashboard (json file) copied from the Raspberry Pi
+    image: grafana-carlo-7.5.2
+    container_name: grafana
     restart: always
     ports:
     - 3000:3000
 #    volumes:
 #    - grafana:/var/lib/grafana
 
-# #Define dockerweather
   weather:
       container_name: "weather"
       build: .
