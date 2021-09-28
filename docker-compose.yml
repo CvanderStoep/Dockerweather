@@ -3,17 +3,19 @@ version: '3'
 services:
   influxDB:
 # below image contains data copied from an existing InfluxDB database (localdata)
-    image: influxdb-carlo
+#    image: influxdb-carlo:1.8
+    image: influxdb:1.8
     container_name: influxDB
     restart: always
     ports:
       - 8086:8086
+# if you want to have a persistent volume, uncomment the lines below and the three lines at the end
 #    volumes:
 #      - influxdb:/var/lib/influxdb
 
   grafana:
 # below image contains a dashboard (json file) copied from the Raspberry Pi
-    image: grafana-carlo-7.5.2
+    image: cvanderstoep/grafana-carlo:7.5.2.small
     container_name: grafana
     restart: always
     ports:
@@ -22,13 +24,23 @@ services:
 #    - grafana:/var/lib/grafana
 
   weather:
-      container_name: "weather"
-      build: .
+      image: cvanderstoep/dockerweather_weather
+      container_name: weather
       depends_on:
         - "grafana"
         - "influxDB"
       stdin_open: true
       tty: true
+
+
+#  weather:
+#      container_name: "weather"
+#      build: .
+#      depends_on:
+#        - "grafana"
+#        - "influxDB"
+#      stdin_open: true
+#      tty: true
 
 
 #volumes:

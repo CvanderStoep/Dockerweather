@@ -18,15 +18,18 @@ from private_info import database_name, docker_address, computer_port
 time.sleep(5)
 client = InfluxDBClient(host=docker_address, port=computer_port)  # connect to Influx 1.8 DB
 
-retention_policy_default = None  # the temperature readings are stored indefinitely
-# retention_policy_one_week = "one-week"  # the light readings are stored one week
-
 if __name__ == '__main__':
+    dbs = client.get_list_database()
+    print('the following databases are found: ', dbs)
 
-    print(client.get_list_database())
-    results = (client.query(database=database_name, query='select * from temperature limit 5'))
-    for result in list(results.get_points()):
-        print(result)
+    if not any(db['name'] == 'localdata' for db in dbs):
+        print('database localdata not found ... creating database')
+        client.create_database('localdata')
+    else:
+        print('database localdata found')
+        results = (client.query(database=database_name, query='select * from temperature limit 5'))
+        for result in list(results.get_points()):
+            print(result)
 
     while True:
         # get outside weather data from the various cities using open weather site
@@ -34,7 +37,7 @@ if __name__ == '__main__':
         for city in cities:
             data_point = data_point + outside_weather(city)
 
-        client.write_points(data_point, database=database_name, retention_policy=retention_policy_default)
+        client.write_points(data_point, database=database_name)
         print(datetime.now(), data_point)
 
         time.sleep(60)  # sleep time in sec.
